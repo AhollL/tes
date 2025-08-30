@@ -11,15 +11,15 @@ const DEFAULT_PROXY_BANK_URL = "https://raw.githubusercontent.com/Mayumiwandi/Em
 const TELEGRAM_BOT_TOKEN = '7636104278:AAERYk78bwov8zMSKMiIWk-cupVgSWK-_ds';
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 const APICF = 'https://apix.sonzaix.web.id/';
-const FAKE_HOSTNAME = 'https://tes-chi-gray.vercel.app';
+const FAKE_HOSTNAME = 'bot-mediafairy.aholterbaik.workers.dev/';
 const serverku = 'free.fairyvpn.dpdns.org';
-const ownerId = 5802239249; // Ganti dengan chat_id pemilik bot (angka tanpa tanda kutip)
+const ownerId = 5802239249; // Ganti dengan chat_id pemilik bot (angka tanpa tanda petik)
 
 // Global country flags definition
 const countryFlags = {
     'AD': '🇦🇩', 'AE': '🇦🇪', 'AL': '🇦🇱', 'AM': '🇦🇲', 'AT': '🇦🇹',
     'AU': '🇦🇺', 'BD': '🇧🇩', 'BE': '🇧🇪', 'BG': '🇧🇬', 'BH': '🇧🇭',
-    'BR': '🇧🇷', 'BY': '🇧🇾', 'CA': '🇨🇦', 'CH': '🇨🇭', 'CL': '🇨🇱',
+    'BR': '🇧🇷', 'BY': '🇧🇾', 'CA': '🇨🇦', 'CH': '� Switzerland', 'CL': '🇨🇱',
     'CN': '🇨🇳', 'CO': '🇨🇴', 'CY': '🇨🇾', 'CZ': '🇨🇿', 'DE': '🇩🇪',
     'DK': '🇩🇰', 'DO': '🇩🇴', 'EE': '🇪🇪', 'ES': '🇪🇸', 'FI': '🇫🇮',
     'FR': '🇫🇷', 'GB': '🇬🇧', 'GE': '🇬🇪', 'GI': '🇬🇮', 'GR': '🇬🇷',
@@ -155,7 +155,7 @@ async function handleDeletePending(request) {
         const host = request.headers.get('Host');
         const webhookUrl = `https://${host}/webhook`;
         const setResponse = await fetch(`${TELEGRAM_API_URL}/setWebhook`, {
-            method: 'POST',
+            method: '.POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url: webhookUrl }),
         });
@@ -402,22 +402,22 @@ async function sendTelegramMessage(chatId, message) {
 async function handleStartCommand(chatId) {
     const welcomeMessage = `
 🌟 Selamat datang di FairyBot! 🌟
-  
+
 💡 Cara Penggunaan:
 1️⃣ Klik /getflag menampilkan daftar config
-   berdasarkan negara 
+   berdasarkan negara
 2️⃣ Kirimkan Proxy IP:Port dalam format yang benar
      Contoh: 1.1.1.1:443
              192.168.1.1:443
    Bot akan mengecek status Proxy untuk Anda.
-  
+
 ✨ Anda bisa memilih opsi untuk membuat VPN Tunnel CloudFlare Gratis Menggunakan ProxyIP yang sudah di Cek dengan format:
   - 🌐 VLESS
   - 🔐 TROJAN
   - 🛡️ Shadowsocks
-  
+
 🚀 Mulai sekarang dengan mengirimkan Proxy IP:Port Anda!
-  
+
 📌 Daftar Commands : /info
     `;
     await sendTelegramMessage(chatId, welcomeMessage);
@@ -426,7 +426,7 @@ async function handleStartCommand(chatId) {
 async function handleGetInfo(chatId) {
     const InfoMessage = `
   Commands di FairyBot‼️
-  
+
   /listwildcard
   /getflag
   `;
@@ -437,13 +437,13 @@ async function handleListWildcard(chatId) {
     const ahol = `telegwkenalimit.dpdns.org`;
     const infoMessage = `
   🌟 List Wildcard VPN Tunnel FairyBot! 🌟
-  
+
   • \`quiz.int.vidio.com.${ahol}\`
   • \`ava.game.naver.com.${ahol}\`
   • \`support.zoom.us.${ahol}\`
   • \`api.midtrans.com.${ahol}\`
   • \`chat.sociomile.com.${ahol}\`
-  
+
   Req WC? PM @abcdef4y
   `;
     await sendTelegramMessage(chatId, infoMessage);
@@ -588,7 +588,7 @@ async function handleShadowSocksCreation(chatId, ip, port, isp, afrcloud) {
 
     const message = `
   Success Create ShadowSocks \`${isp}\` \n🌟 \`${ip}:${port}\` 🌟
-  
+
 \`\`\`SS-TLS
 ${ssTls}\`\`\`
 \`\`\`SS-nTLS
@@ -596,7 +596,7 @@ ${ssNTls}\`\`\`
   \`\`\`yaml
 ${proxies}
   \`\`\`
-  
+
   klik /listwildcard untuk mengetahui bug yang sudah di pointing
     `;
 
@@ -611,7 +611,7 @@ async function handleVlessCreation(chatId, ip, port, isp, afrcloud) {
 
     const message = `
   Success Create VLESS \`${isp}\` \n🌟 \`${ip}:${port}\` 🌟
-  
+
 \`\`\`VLESS-TLS
 ${vlessTLS}\`\`\`
 \`\`\`VLESS-nTLS
@@ -633,7 +633,7 @@ ${vlessNTLS}\`\`\`
       headers:
         Host: ${afrcloud}
   \`\`\`
-  
+
   klik /listwildcard untuk mengetahui bug yang sudah di pointing
     `;
 
@@ -648,7 +648,7 @@ async function handleTrojanCreation(chatId, ip, port, isp, afrcloud) {
 
     const message = `
   Success Create TROJAN \`${isp}\` \n🌟 \`${ip}:${port}\` 🌟
-  
+
 \`\`\`TROJAN-TLS
 ${trojanTLS}\`\`\`
 \`\`\`TROJAN-nTLS
@@ -669,7 +669,7 @@ ${trojanNTLS}\`\`\`
       headers:
         Host: ${afrcloud}
   \`\`\`
-  
+
   klik /listwildcard untuk mengetahui bug yang sudah di pointing
   `;
 
@@ -794,5 +794,4 @@ async function updateFlagPage(chatId, messageId, pageChange) {
         console.error('Error updating flag page:', error);
         await sendTelegramMessage(chatId, `⚠️ There was an error updating the flag page: ${error.message}`);
     }
-
 }
