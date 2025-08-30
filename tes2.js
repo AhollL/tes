@@ -11,7 +11,7 @@ const DEFAULT_PROXY_BANK_URL = "https://raw.githubusercontent.com/Mayumiwandi/Em
 const TELEGRAM_BOT_TOKEN = '7636104278:AAERYk78bwov8zMSKMiIWk-cupVgSWK-_ds';
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 const APICF = 'https://apix.sonzaix.web.id/';
-const FAKE_HOSTNAME = 'bot-mediafairy.aholterbaik.workers.dev/';
+const FAKE_HOSTNAME = 'https://tes-chi-gray.vercel.app';
 const serverku = 'free.fairyvpn.dpdns.org';
 const ownerId = 5802239249; // Ganti dengan chat_id pemilik bot (angka tanpa tanda kutip)
 
@@ -794,4 +794,5 @@ async function updateFlagPage(chatId, messageId, pageChange) {
         console.error('Error updating flag page:', error);
         await sendTelegramMessage(chatId, `⚠️ There was an error updating the flag page: ${error.message}`);
     }
+
 }
