@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Konverter V2Ray</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .main-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 20px 30px 30px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dddfe2;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #0d6efd;
+            margin-bottom: 25px;
+        }
+        h2 {
+            font-size: 1.5em;
+            color: #343a40;
+            margin-top: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            margin-top: 25px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            box-sizing: border-box;
+            resize: vertical;
+            min-height: 150px;
+        }
+        textarea.json-input { height: 250px; }
+        textarea.link-output { background-color: #e9ecef; color: #495057; }
+        
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #0d6efd;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        button:hover { background-color: #0b5ed7; }
+
+        .button-group, .output-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .button-group button, .output-actions button {
+            width: 50%;
+            margin: 0;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .button-group button { background-color: #6c757d; }
+        .button-group button:hover { background-color: #5a6268; }
+
+        .copy-button { background-color: #198754; }
+        .copy-button:hover { background-color: #157347; }
+        .download-button { background-color: #fd7e14; }
+        .download-button:hover { background-color: #e66a00; }
+        
+        #status, .status-message {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 1.2em;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 25px;
+        }
+        .tab-button {
+            padding: 12px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+        .tab-button.active { color: #0d6efd; border-bottom-color: #0d6efd; }
+        .slide-content { display: none; }
+        .slide-content.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="tabs">
+            <button class="tab-button active" onclick="showSlide('slide1', this)">🏠 V2RAY JSON KE LINK</button>
+            <button class="tab-button" onclick="showSlide('slide2', this)">📱 Link ke Config Aplikasi</button>
+        </div>
+
+        <div id="slide1" class="slide-content active">
+            <h1>KONVERTER V2RAY JSON KE LINK</h1>
+            <label for="jsonInput"><b>1. Tempel Konfigurasi JSON di Sini:</b></label>
+            <textarea id="jsonInput" class="json-input" placeholder="Paste seluruh konfigurasi JSON Anda di sini..."></textarea>
+            <div class="button-group">
+                <button onclick="pasteJson()">📋 Tempel</button>
+                <button onclick="clearInput()">❌ Bersihkan</button>
+            </div>
+            <button onclick="konversiJsonKeLink()"><b>[ KONVERSI SEKARANG ]</b></button>
+            <label for="outputLink"><b>2. Hasil Link (URI):</b></label>
+            <textarea id="outputLink" class="link-output" readonly placeholder="Hasil konversi akan muncul di sini..."></textarea>
+            <div class="output-actions">
+                <button class="copy-button" style="width:100%" onclick="copyText('outputLink', this)">🔗 Salin Link</button>
+            </div>
+            <p id="status"></p>
+        </div>
+
+        <div id="slide2" class="slide-content">
+            <h1>KONVERTER LINK KE CONFIG APLIKASI</h1>
+            <label for="v2rayLinkInput"><b>1. Tempel Link VLESS / VMess di Sini:</b></label>
+            <textarea id="v2rayLinkInput" placeholder="vless://...  vmess://..."></textarea>
+            <div class="button-group">
+                 <button onclick="document.getElementById('v2rayLinkInput').focus();">📋 Tempel</button>
+                <button onclick="clearAppLinkInputs()">❌ Bersihkan</button>
+            </div>
+            <button onclick="konversiLinkKeConfig()"><b>[ KONVERSI SEKARANG ]</b></button>
+            <p class="status-message" id="appStatus"></p>
+
+            <div class="output-group">
+                <h3>Clash Meta (.yaml)</h3>
+                <textarea id="clashOutput" readonly></textarea>
+                <div class="output-actions">
+                    <button class="copy-button" onclick="copyText('clashOutput', this)">Salin</button>
+                    <button class="download-button" onclick="downloadConfig('clashOutput', 'clash.yaml')">Unduh</button>
+                </div>
+            </div>
+            <div class="output-group">
+                <h3>Nekobox (.json)</h3>
+                <textarea id="nekoboxOutput" readonly></textarea>
+                <div class="output-actions">
+                    <button class="copy-button" onclick="copyText('nekoboxOutput', this)">Salin</button>
+                    <button class="download-button" onclick="downloadConfig('nekoboxOutput', 'nekobox.json')">Unduh</button>
+                </div>
+            </div>
+             <div class="output-group">
+                <h3>Sing-Box (New) (.json)</h3>
+                <textarea id="singboxNewOutput" readonly></textarea>
+                 <div class="output-actions">
+                    <button class="copy-button" onclick="copyText('singboxNewOutput', this)">Salin</button>
+                    <button class="download-button" onclick="downloadConfig('singboxNewOutput', 'sing-box.json')">Unduh</button>
+                </div>
+            </div>
+            <div class="output-group">
+                <h3>Sing-Box (Old v1.8) (.yaml)</h3>
+                <textarea id="singboxOldOutput" readonly></textarea>
+                <div class="output-actions">
+                    <button class="copy-button" onclick="copyText('singboxOldOutput', this)">Salin</button>
+                    <button class="download-button" onclick="downloadConfig('singboxOldOutput', 'sing-box-old.yaml')">Unduh</button>
+                </div>
+            </div>
+            <div class="output-group">
+                <h3>Surfboard (.conf)</h3>
+                <textarea id="surfboardOutput" readonly></textarea>
+                <div class="output-actions">
+                    <button class="copy-button" onclick="copyText('surfboardOutput', this)">Salin</button>
+                    <button class="download-button" onclick="downloadConfig('surfboardOutput', 'surfboard.conf')">Unduh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="watermark">
+        <a href="https://whatsapp.com/channel/0029VammdIR29754ejHZiE1T" target="_blank" rel="noopener noreferrer" title="Kunjungi channel WhatsApp saya">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Channel">
+        </a>
+    </div>
+    
+    <script>
+        // =================================================================
+        // ==  FUNGSI UTAMA (NAVIGASI, SALIN, UNDUH)
+        // =================================================================
+        function showSlide(slideId,element){document.querySelectorAll('.slide-content').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));document.getElementById(slideId).classList.add('active');element.classList.add('active');}
+        function showCopySuccess(button){const o=button.textContent;button.textContent='✅ Berhasil Disalin!';button.disabled=true;setTimeout(()=>{button.textContent=o;button.disabled=false;},2000);}
+        function copyText(elementId,button){const t=document.getElementById(elementId).value;if(!t||t.startsWith('Error:'))return;if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(()=>showCopySuccess(button)).catch(e=>{console.error('Modern copy failed:',e);copyFallback(t,button)})}else{copyFallback(t,button)}}
+        function copyFallback(text,button){const e=document.createElement('textarea');e.value=text;e.style.position='absolute';e.style.left='-9999px';document.body.appendChild(e);e.select();e.setSelectionRange(0,99999);try{if(document.execCommand('copy')){showCopySuccess(button)}else{throw new Error('execCommand failed')}}catch(t){console.error('Fallback copy failed:',t);alert('Gagal menyalin otomatis, mohon salin manual.')}finally{document.body.removeChild(e)}}
+        function downloadConfig(elementId,filename){const t=document.getElementById(elementId).value;if(!t||t.startsWith('Error:')){alert('Tidak ada konten untuk diunduh.');return}const b=new Blob([t],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),l=document.createElement('a');l.href=u;l.download=filename;document.body.appendChild(l);l.click();document.body.removeChild(l);URL.revokeObjectURL(u)}
+
+        // =================================================================
+        // ==  SLIDE 1: JSON ke Link
+        // =================================================================
+        function konversiJsonKeLink(){const t=document.getElementById("jsonInput").value,e=document.getElementById("outputLink"),o=document.getElementById("status");if(e.value="",o.textContent="",!t.trim())return void(e.value="Error: Kotak input JSON kosong.");try{const n=JSON.parse(t),s=n.outbounds[0],i=s.protocol.toLowerCase(),l=s.tag||"MyConnection";let r="";"vless"===i?(o.textContent="Protokol: VLESS",r=konversiVless(s,l)):"vmess"===i?(o.textContent="Protokol: VMess",r=konversiVmess(s,l)):(()=>{throw new Error(`Protokol '${i}' tidak didukung.`)})(),e.value=r,o.style.color="green"}catch(t){e.value=`Error: ${t.message}`,o.textContent="Konversi Gagal!",o.style.color="red"}}
+        function konversiVless(t,e){const o=t.settings.vnext[0],n=o.users[0],s=t.streamSettings,i={encryption:n.encryption||"none",security:s.security||"",type:s.network||"tcp"};"tls"===i.security&&(i.sni=(s.tlsSettings||{}).serverName||""),"ws"===i.type&&(i.host=(s.wsSettings.headers||{}).Host||"",i.path=s.wsSettings.path||"/");const l=Object.entries(i).filter((([,t])=>t)).map((([t,e])=>`${t}=${encodeURIComponent(e)}`)).join("&");return`vless://${n.id}@${o.address}:${o.port}?${l}#${encodeURIComponent(e)}`}
+        function konversiVmess(t,e){const o=t.settings.vnext[0],n=o.users[0],s=t.streamSettings,i={v:"2",ps:e,add:o.address,port:o.port.toString(),id:n.id,aid:(n.alterId||0).toString(),net:s.network||"tcp",type:"none",host:"",path:"",tls:s.security||""};return"ws"===i.net&&(i.host=(s.wsSettings.headers||{}).Host||o.address,i.path=s.wsSettings.path||"/"),"tls"===i.tls&&(i.sni=(s.tlsSettings||{}).serverName||i.host),`vmess://${btoa(JSON.stringify(i))}`}
+        function pasteJson(){document.getElementById("jsonInput").focus(),document.getElementById("status").textContent="Silakan tempel (Ctrl+V)."}
+        function clearInput(){document.getElementById("jsonInput").value="",document.getElementById("outputLink").value="",document.getElementById("status").textContent="Input & hasil dibersihkan."}
+
+        // =================================================================
+        // ==  SLIDE 2: Link ke Config Aplikasi (DENGAN PERBAIKAN VMESS)
+        // =================================================================
+        function clearAppLinkInputs(){['v2rayLinkInput','clashOutput','nekoboxOutput','singboxOldOutput','singboxNewOutput','surfboardOutput'].forEach(id=>document.getElementById(id).value='');const s=document.getElementById('appStatus');s.textContent='Input & hasil dibersihkan.';s.style.color='black';}
+        function parseVlessUri(uri){const u=new URL(uri);return{protocol:'vless',remark:decodeURIComponent(u.hash.substring(1))||'VLESS',server:u.hostname,port:parseInt(u.port,10),uuid:u.username,network:u.searchParams.get('type')||'tcp',security:u.searchParams.get('security')||'none',sni:u.searchParams.get('sni')||u.searchParams.get('host')||u.hostname,host:u.searchParams.get('host')||u.searchParams.get('sni')||u.hostname,path:decodeURIComponent(u.searchParams.get('path')||'/')};}
+        
+        // --- FUNGSI PARSE VMESS YANG DIPERBAIKI ---
+        function parseVmessUri(uri){
+            const base64Part = uri.substring('vmess://'.length);
+            const decoded = JSON.parse(atob(base64Part));
+            return {
+                protocol: 'vmess', 
+                remark: decoded.ps || 'VMess', 
+                server: decoded.add,
+                port: parseInt(decoded.port, 10), 
+                uuid: decoded.id, 
+                alterId: parseInt(decoded.aid, 10),
+                network: decoded.net || 'tcp', 
+                security: decoded.tls === 'tls' ? 'tls' : 'none', // Memastikan nilai security adalah 'tls' atau 'none'
+                sni: decoded.sni || decoded.host || decoded.add,
+                host: decoded.host || decoded.sni || decoded.add,
+                path: decoded.path || '/'
+            };
+        }
+        
+        function konversiLinkKeConfig(){
+            const link=document.getElementById('v2rayLinkInput').value.trim(),status=document.getElementById('appStatus');
+            status.textContent='';if(!link){status.textContent='Error: Input link kosong.';status.style.color='red';return;}
+            try {
+                let pD;
+                if (link.startsWith('vless://'))pD=parseVlessUri(link);
+                else if(link.startsWith('vmess://'))pD=parseVmessUri(link);
+                else throw new Error('Link tidak valid.');
+                document.getElementById('clashOutput').value=generateClashMetaConfig(pD);
+                document.getElementById('nekoboxOutput').value=generateNekoboxConfig(pD);
+                document.getElementById('singboxOldOutput').value=generateSingboxOldConfig(pD);
+                document.getElementById('singboxNewOutput').value=generateSingboxNewConfig(pD);
+                document.getElementById('surfboardOutput').value=generateSurfboardConfig(pD);
+                status.textContent=`Konversi Berhasil untuk ${pD.protocol.toUpperCase()}!`;status.style.color='green';
+            }catch(e){status.textContent=`Error: ${e.message}`;status.style.color='red';['clashOutput','nekoboxOutput','singboxOldOutput','singboxNewOutput','surfboardOutput'].forEach(id=>document.getElementById(id).value='');}
+        }
+        
+        // --- FUNGSI GENERATOR CONFIG YANG DISESUAIKAN UNTUK VMESS ---
+        function generateClashMetaConfig(d){const p=`- name: "${d.remark}"\n  server: ${d.server}\n  port: ${d.port}\n  type: ${d.protocol}\n  uuid: ${d.uuid}\n  ${d.protocol==='vmess'?`alterId: ${d.alterId}\n`:''}  cipher: auto\n  tls: ${d.security==='tls'}\n  udp: true\n  skip-cert-verify: true\n  network: ${d.network}\n  servername: ${d.sni}\n  ws-opts:\n    path: "${d.path}"\n    headers:\n      Host: ${d.host}`;return `port: 7890\nmixed-port: 7893\nallow-lan: true\nmode: rule\nexternal-controller: 0.0.0.0:9090\ndns:\n  enable: true\n  enhanced-mode: fake-ip\n  nameserver:\n    - 8.8.8.8\nproxies:\n${p}\nproxy-groups:\n- name: INTERNET\n  type: select\n  proxies:\n    - "${d.remark}"\n    - DIRECT\nrules:\n- MATCH,INTERNET`;}
+        function generateNekoboxConfig(d){const o={tag:d.remark,type:d.protocol,server:d.server,server_port:d.port,uuid:d.uuid};if(d.protocol==='vmess'){o.alter_id=d.alterId;o.security="auto";}if(d.security==='tls'){o.tls={enabled:true,insecure:true,server_name:d.sni};}if(d.network==='ws'){o.transport={type:"ws",path:d.path,headers:{Host:d.host}};}const c={log:{level:"info"},inbounds:[{type:"tun",tag:"tun-in",inet4_address:"172.19.0.1/28"}],outbounds:[o,{tag:"direct",type:"direct"}],route:{final:d.remark}};return JSON.stringify(c,null,2);}
+        function generateSingboxNewConfig(d){const o={type:d.protocol,tag:d.remark,server:d.server,server_port:d.port,uuid:d.uuid};if(d.protocol==='vmess'){o.alter_id=d.alterId;o.security="auto";}if(d.security==='tls'){o.tls={enabled:true,server_name:d.sni,insecure:true};}if(d.network==='ws'){o.transport={type:"ws",path:d.path,headers:{Host:d.host}};}const c={log:{level:"info"},inbounds:[{type:"tun",tag:"tun-in"}],outbounds:[o,{type:"direct",tag:"direct"}],route:{final:d.remark}};return JSON.stringify(c,null,2);}
+        function generateSingboxOldConfig(d){return generateClashMetaConfig(d);}
+        function generateSurfboardConfig(d){const p=`${d.remark} = ${d.protocol}, ${d.server}, ${d.port}, username=${d.uuid}${d.protocol==='vmess'?`, alterId=${d.alterId}`:''}, network=${d.network}, ws=true, ws-path=${d.path}, ws-headers=Host:${d.host}${d.security==='tls'?`, tls=true, skip-cert-verify=true, sni=${d.sni}`:''}`;return `[General]\ndns-server = system, 8.8.8.8\n[Proxy]\n${p}\n[Proxy Group]\nSelect = select, ${d.remark}, DIRECT\n[Rule]\nMATCH,Select`;}
+    </script>
+</body>
+</html>
